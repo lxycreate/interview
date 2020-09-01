@@ -28,7 +28,7 @@ Function.prototype.myBind = function (thisArg, ...reset) {
 function test(prop) {
   console.log(this.name)
   console.log(`test - ${prop}`)
-  return 99;
+  return 'bind-return';
 }
 
 test.myCall({ name: 'myCall' }, 'myCall')
@@ -36,3 +36,19 @@ test.myCall({ name: 'myCall' }, 'myCall')
 console.log(test.myApply({ name: 'myApply' }, ['myApply']))
 
 console.log(test.myBind({ name: 'myBind' }, 'myBind')())
+
+/**
+ * 手写new
+ */
+function myNew(fn) {
+  let obj = Object.create(fn), res = fn.call(obj);
+  if (res instanceof Object) {
+    return res;
+  }
+  return obj;
+}
+
+function testNew() {
+  return []
+}
+console.log(new testNew())

@@ -178,7 +178,7 @@ function Children(name) {
   Parent.call(this, name)
 }
 
-Children.prototype = Object.create(Parent.prototype);
+Children.prototype = new Person();
 Children.prototype.constructor = Children;
 
 /**
