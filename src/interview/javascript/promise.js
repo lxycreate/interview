@@ -30,4 +30,10 @@ MyPromise.all = function (arr) {
   })
 }
 
+MyPromise.prototype.finally = function (callback) {
+  this.then(res => {
+    typeof callback === 'function' && callback(res)
+  }, res => { typeof callback === 'function' && callback(res) })
+}
+
 console.log(Promise.reject)

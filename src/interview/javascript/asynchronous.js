@@ -17,8 +17,10 @@ function myInstanceOf(a, b) {
   }
 }
 
-console.log(myInstanceOf({}, Object))
-
+// console.log(myInstanceOf({}, Object))
+/**
+ * 深度克隆包含环形引用
+ */
 function deepCloneFnc(oldData) {
   let mapRec = new Map();
   function deepClone(data) {
@@ -83,27 +85,72 @@ const obj2 = {
 obj1.next = obj2;
 obj2.next = obj1;
 const obj3 = deepCloneFnc(obj1);
-console.log(obj3);
+// console.log(obj3);
 
-// async function async1() {
-//   console.log('async1 start')
-//   await async2()
-//   console.log('async1 end')
-// }
-// async function async2() {
-//   console.log('async2')
-// }
-// console.log('script start')
-// // setTimeout(function () {
-// //   console.log('setTimeout')
-// // }, 0)
-// async1();
+async function async1() {
+  console.log('async1 start')
+  await async2()
+  console.log('微二')
+  await async3()
+  console.log('微四')
+  await async4();
+  console.log('微五')
+}
+async function async1Copy() {
+  return new Promise((resolve) => {
+    console.log('async1 start')
+    async2()
+    resolve()
+  }).then(() => {
+    new Promise((resolve) => {
+      console.log('微二');
+      async3()
+      resolve()
+    }).then(() => {
+      new Promise(resolve => {
+        console.log('微四')
+        async4();
+        resolve()
+      }).then(() => {
+        new Promise((resolve) => {
+          console.log('微五')
+          resolve()
+        })
+      })
+    })
+  })
+}
+
+async function async2() {
+  console.log('async2')
+}
+async function async3() {
+  console.log('async3')
+}
+async function async4() {
+  console.log('async4')
+}
 // new Promise(function (resolve) {
 //   console.log('promise1')
 //   resolve();
 // }).then(function () {
-//   console.log('promise2')
+//   console.log('微一') // 微一
 // })
-// // console.log('script end')
 
+async1Copy();
+// async1();
+
+// new Promise(function (resolve) {
+//   console.log('promise2')
+//   resolve();
+// }).then(function () {
+//   console.log('微三') // 微一
+// })
+
+// new Promise(function (resolve) {
+//   console.log('promise3')
+//   resolve();
+// }).then(function () {
+//   console.log('微三+') // 微一
+// })
 
