@@ -97,15 +97,15 @@ Promise.prototype.race = function (promises) {
 
 module.exports = Promise;
 
-// let t = new Promise((resolve, reject) => {
-//   resolve(99);
-//   // reject(10085);
-// }).then(res => {
-//   console.log(res)
-// }, err => {
-//   console.log(err)
-// }).then(res => { console.log(res) });
+let t = new Promise((resolve, reject) => {
+  resolve(99);
+  // reject(10085);
+}).then(res => {
+  console.log(res)
+}, err => {
+  console.log(err)
+}).then(res => { console.log(res) });
 
-// t.then(res=>{
-//   console.log(res)
-// })
+t.then(res=>{
+  console.log(res)
+})

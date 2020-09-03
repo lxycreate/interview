@@ -2,10 +2,22 @@
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png" />
     <HelloWorld msg="Welcome to Your Vue.js App" />
+    <div class="test">
+      <div class="child"></div>
+      <div class="child"></div>
+      <div class="child"></div>
+    </div>
   </div>
 </template>
 
 <script>
+var obj = {
+  a: function () {
+    console.log(this);
+  },
+};
+var temp = obj.a;
+temp();
 import HelloWorld from "./components/HelloWorld.vue";
 
 export default {
@@ -62,8 +74,6 @@ export default {
       });
     }
 
-    
-
     myJsonp({
       url: "https://c.y.qq.com/musichall/fcgi-bin/fcg_yqqhomepagerecommend.fcg",
       cbkey: "jsonpCallback",
@@ -90,7 +100,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -98,5 +108,13 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  .test {
+    display: flex;
+    height: 50px;
+
+    .child {
+      width: 33.3%;
+    }
+  }
 }
 </style>
