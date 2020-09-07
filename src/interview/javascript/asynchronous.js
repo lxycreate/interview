@@ -137,7 +137,7 @@ async function async4() {
 //   console.log('微一') // 微一
 // })
 
-async1Copy();
+// async1Copy();
 // async1();
 
 // new Promise(function (resolve) {
@@ -154,3 +154,51 @@ async1Copy();
 //   console.log('微三+') // 微一
 // })
 
+// function test() {
+//   setTimeout(() => {
+//     console.log(9);
+//     Promise.resolve().then(res => {
+//       console.log(99)
+//     })
+//   })
+//   setTimeout(() => {
+//     console.log(8);
+//     Promise.resolve().then(res => {
+//       console.log(88)
+//     })
+//   })
+// }
+
+// test();
+// Promise.resolve().then(res => {
+//   console.log(77)
+// })
+
+// let a = {
+//   value: 1,
+//   valueOf: function () {
+//     return this.value++;
+//   }
+// }
+
+// console.log(a == 1 && a == 2 && a == 3)
+
+let obj = {
+  value: 1,
+  fn: function () {
+    var test = function () {
+      this.value++;
+    };
+    test();
+  } 
+}
+
+// obj.fn();
+// console.log(obj.value)
+
+function es() {
+  console.log(this)
+}
+
+es.call(null)
+es.apply({})

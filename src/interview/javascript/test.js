@@ -144,5 +144,5 @@ function resolvePromise(promise2, x, resolve, reject) {
         resolve(x);
     }
 }
-
+console.log(Promise.resolve)
 module.exports = Promise;

@@ -38,24 +38,75 @@ function Promise(excutator) {
 }
 
 Promise.prototype.then = function (onFulfilled, onRejected) {
-  return new Promise((resolve, reject) => {
+  onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : value => value;
+  onRejected = typeof onRejected === 'function' ? onRejected : reason => { throw reason };
+  let promise = new Promise((resolve, reject) => {
     if (this.state === 'pending') {
-      typeof onFulfilled === 'function' && this.onFulfilledCallbacks.push(onFulfilled);
-      this.onFulfilledCallbacks.push(resolve);
-      typeof onRejected === 'function' && this.onRejectedCallbacks.push(onRejected);
-      this.onRejectedCallbacks.push(reject);
+      this.onFulfilledCallbacks.push(setTimeout((onFulfilled) => {
+        try {
+          let x = onFulfilled(this.value);
+          resolvePromise(promise, x, resolve, reject);
+        } catch (err) {
+          reject(err);
+        }
+      }));
+      this.onRejectedCallbacks.push(setTimeout((onRejected) => {
+        try {
+          let x = onRejected(this.reason);
+          resolvePromise(promise, x, resolve, reject);
+        } catch (err) {
+          reject(err);
+        }
+      }));
     }
     else if (this.state === 'rejected') {
-      setTimeout(() => {
-        typeof onFulfilled === 'function' && onFulfilled(this.value);
-        resolve(this.value);
+      setTimeout((onRejected) => {
+        try {
+          let x = onRejected(this.reason);
+          resolvePromise(promise, x, resolve, reject);
+        } catch (err) {
+          reject(err);
+        }
       })
     } else if (this.state === 'fulfilled') {
-      typeof onRejected === 'function' && onRejected(this.value);
-      reject(this.value)
+      setTimeout((onFulfilled) => {
+        try {
+          let x = onFulfilled(this.value);
+          resolvePromise(promise, x, resolve, reject);
+        } catch (err) {
+          reject(err);
+        }
+      })
     }
   });
+  return promise;
 }
+
+function resolvePromise(promise, x, resolve, reject) {
+  if (promise === x) {
+    reject(new Error('promise circle'));
+  }
+}
+
+Promise.prototype.resolve = function (promise) {
+  if (promise instanceof Promise) {
+    return promise;
+  } else if (promise && typeof promise.then === 'function') {
+    setTimeout(() => {
+      promise.then();
+    });
+    return new Promise((resolve, rejet) => { })
+  } else {
+    return new Promise((resolve, rejet) => {
+      resolve(promise);
+    })
+  }
+}
+
+console.log(Promise.prototype.resolve(0))
+
+// let tz = Promise.resolve(0)
+// console.log(tz)
 
 Promise.prototype.all = function (arr) {
   return new Promise((resolve, reject) => {
@@ -95,17 +146,17 @@ Promise.prototype.race = function (promises) {
   })
 }
 
-module.exports = Promise;
+// module.exports = Promise;
 
-let t = new Promise((resolve, reject) => {
-  resolve(99);
-  // reject(10085);
-}).then(res => {
-  console.log(res)
-}, err => {
-  console.log(err)
-}).then(res => { console.log(res) });
+// let t = new Promise((resolve, reject) => {
+//   resolve(99);
+//   // reject(10085);
+// }).then(res => {
+//   console.log(res)
+// }, err => {
+//   console.log(err)
+// }).then(res => { console.log(res) });
 
-t.then(res=>{
-  console.log(res)
-})
+// t.then(res => {
+//   console.log(res)
+// })
