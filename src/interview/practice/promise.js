@@ -42,22 +42,22 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
   onRejected = typeof onRejected === 'function' ? onRejected : reason => { throw reason };
   let promise = new Promise((resolve, reject) => {
     if (this.state === 'pending') {
-      this.onFulfilledCallbacks.push(setTimeout((onFulfilled) => {
+      this.onFulfilledCallbacks.push((onFulfilled) => {
         try {
           let x = onFulfilled(this.value);
           resolvePromise(promise, x, resolve, reject);
         } catch (err) {
           reject(err);
         }
-      }));
-      this.onRejectedCallbacks.push(setTimeout((onRejected) => {
+      });
+      this.onRejectedCallbacks.push((onRejected) => {
         try {
           let x = onRejected(this.reason);
           resolvePromise(promise, x, resolve, reject);
         } catch (err) {
           reject(err);
         }
-      }));
+      });
     }
     else if (this.state === 'rejected') {
       setTimeout((onRejected) => {
@@ -83,8 +83,43 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
 }
 
 function resolvePromise(promise, x, resolve, reject) {
+  //PromiseA+ 2.3.1
   if (promise === x) {
-    reject(new Error('promise circle'));
+    reject(new TypeError('Chaining cycle'));
+  }
+  if (x && typeof x === 'object' || typeof x === 'function') {
+    let used; //PromiseA+2.3.3.3.3 只能调用一次
+    try {
+      let then = x.then;
+      if (typeof then === 'function') {
+        //PromiseA+2.3.3
+        then.call(x, (y) => {
+          //PromiseA+2.3.3.1
+          if (used) return;
+          used = true;
+          resolvePromise(promise, y, resolve, reject);
+        }, (r) => {
+          //PromiseA+2.3.3.2
+          if (used) return;
+          used = true;
+          reject(r);
+        });
+
+      } else {
+        //PromiseA+2.3.3.4
+        if (used) return;
+        used = true;
+        resolve(x);
+      }
+    } catch (e) {
+      //PromiseA+ 2.3.3.2
+      if (used) return;
+      used = true;
+      reject(e);
+    }
+  } else {
+    //PromiseA+ 2.3.3.4
+    resolve(x);
   }
 }
 
@@ -160,3 +195,5 @@ Promise.prototype.race = function (promises) {
 // t.then(res => {
 //   console.log(res)
 // })
+
+console.log({}.__proto__)

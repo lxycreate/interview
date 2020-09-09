@@ -22,3 +22,4 @@ pnpm-debug.log*
 *.sln
 *.sw?
 src/interview/javascript/tempCodeRunnerFile.js
+src/interview/practice/tempCodeRunnerFile.js
