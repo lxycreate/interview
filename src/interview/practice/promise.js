@@ -42,7 +42,7 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
   onRejected = typeof onRejected === 'function' ? onRejected : reason => { throw reason };
   let promise = new Promise((resolve, reject) => {
     if (this.state === 'pending') {
-      this.onFulfilledCallbacks.push((onFulfilled) => {
+      this.onFulfilledCallbacks.push(() => {
         try {
           let x = onFulfilled(this.value);
           resolvePromise(promise, x, resolve, reject);
@@ -50,7 +50,7 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
           reject(err);
         }
       });
-      this.onRejectedCallbacks.push((onRejected) => {
+      this.onRejectedCallbacks.push(() => {
         try {
           let x = onRejected(this.reason);
           resolvePromise(promise, x, resolve, reject);
@@ -60,7 +60,7 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
       });
     }
     else if (this.state === 'rejected') {
-      setTimeout((onRejected) => {
+      setTimeout(() => {
         try {
           let x = onRejected(this.reason);
           resolvePromise(promise, x, resolve, reject);
@@ -69,7 +69,7 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
         }
       })
     } else if (this.state === 'fulfilled') {
-      setTimeout((onFulfilled) => {
+      setTimeout(() => {
         try {
           let x = onFulfilled(this.value);
           resolvePromise(promise, x, resolve, reject);
@@ -126,22 +126,24 @@ function resolvePromise(promise, x, resolve, reject) {
 Promise.prototype.resolve = function (promise) {
   if (promise instanceof Promise) {
     return promise;
-  } else if (promise && typeof promise.then === 'function') {
-    setTimeout(() => {
-      promise.then();
-    });
-    return new Promise((resolve, rejet) => { })
-  } else {
-    return new Promise((resolve, rejet) => {
-      resolve(promise);
-    })
   }
+  if (typeof promise === 'object' || typeof promise === 'function') {
+    try {
+      // 判断是否有then方法
+      let then = promise.then;
+      if (typeof then === 'function') {
+        return new Promise(then.call(promise)); // 执行value方法
+      }
+    } catch (e) {
+      return new Promise((resolve, reject) => {
+        reject(e);
+      });
+    }
+  }
+  return new Promise((resolve, reject) => {
+    resolve(promise);
+  });
 }
-
-console.log(Promise.prototype.resolve(0))
-
-// let tz = Promise.resolve(0)
-// console.log(tz)
 
 Promise.prototype.all = function (arr) {
   return new Promise((resolve, reject) => {
@@ -181,19 +183,10 @@ Promise.prototype.race = function (promises) {
   })
 }
 
-// module.exports = Promise;
+let a = new Promise((resolve, reject) => {
+  resolve(1)
+})
 
-// let t = new Promise((resolve, reject) => {
-//   resolve(99);
-//   // reject(10085);
-// }).then(res => {
-//   console.log(res)
-// }, err => {
-//   console.log(err)
-// }).then(res => { console.log(res) });
+let b = a.then((val) => { return val }, (val) => { console.log(val) })
 
-// t.then(res => {
-//   console.log(res)
-// })
-
-console.log({}.__proto__)
+setTimeout(() => { console.log(b) })

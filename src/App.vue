@@ -1,29 +1,24 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
+    <!-- <img alt="Vue logo" src="./assets/logo.png" />
     <HelloWorld msg="Welcome to Your Vue.js App" />
     <div class="test">
       <div class="child"></div>
       <div class="child"></div>
       <div class="child"></div>
-    </div>
+    </div> -->
+    <visualization></visualization>
   </div>
 </template>
 
 <script>
-var obj = {
-  a: function () {
-    console.log(this);
-  },
-};
-var temp = obj.a;
-temp();
 import HelloWorld from "./components/HelloWorld.vue";
-
+import Visualization from "./views/visualization/visualization"
 export default {
   name: "App",
   components: {
     HelloWorld,
+    Visualization
   },
   mounted() {
     window.jsonpCount = 0;
