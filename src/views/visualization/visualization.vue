@@ -16,46 +16,6 @@ export default {
     return {};
   },
   mounted() {
-    /**
-     * Fund Transfer Demo
-     * by 十吾
-     */
-    const getNodeConfig = (node) => {
-      if (node.nodeError) {
-        return {
-          basicColor: ERROR_COLOR,
-          fontColor: "#FFF",
-          borderColor: ERROR_COLOR,
-          bgColor: "#E66A6C",
-        };
-      }
-      let config = {
-        basicColor: "#5B8FF9",
-        fontColor: "#5B8FF9",
-        borderColor: "#5B8FF9",
-        bgColor: "#C6E5FF",
-      };
-      switch (node.type) {
-        case "root": {
-          config = {
-            basicColor: "#E3E6E8",
-            fontColor: "rgba(0,0,0,0.85)",
-            borderColor: "#E3E6E8",
-            bgColor: "#5b8ff9",
-          };
-          break;
-        }
-        default:
-          break;
-      }
-      return config;
-    };
-
-    const colorMap = {
-      A: "#72CC4A",
-      B: "#1A91FF",
-      C: "#FFAA15",
-    };
     const data = {
       nodes: [
         {
@@ -101,76 +61,62 @@ export default {
           target: "2",
           data: {
             type: "A",
-            amount: "100,000 Yuan",
-            date: "2019-08-03",
+            amount: "inner",
           },
         },
         {
           source: "1",
           target: "3",
           data: {
-            type: "B",
-            amount: "100,000 Yuan",
-            date: "2019-08-03",
+            amount: "inner",
           },
         },
         {
           source: "2",
           target: "5",
           data: {
-            type: "C",
-            amount: "100,000 Yuan",
-            date: "2019-08-03",
+            amount: "inner",
           },
         },
         {
           source: "5",
           target: "6",
           data: {
-            type: "B",
-            amount: "100,000 Yuan",
-            date: "2019-08-03",
+            amount: "inner",
           },
         },
         {
           source: "3",
           target: "4",
           data: {
-            type: "C",
-            amount: "100,000 Yuan",
-            date: "2019-08-03",
+            amount: "inner",
           },
         },
         {
           source: "4",
           target: "7",
           data: {
-            type: "B",
-            amount: "100,000 Yuan",
-            date: "2019-08-03",
+            amount: "inner",
           },
         },
         {
           source: "1",
           target: "8",
           data: {
-            type: "B",
-            amount: "100,000 Yuan",
-            date: "2019-08-03",
+            amount: "inner",
           },
         },
         {
           source: "1",
           target: "9",
           data: {
-            type: "C",
-            amount: "100,000 Yuan",
-            date: "2019-08-03",
+            amount: "inner",
           },
         },
       ],
     };
 
+    // 矩形框
     G6.registerNode(
       "round-rect",
       {
@@ -208,16 +154,15 @@ export default {
             },
             name: "circle-shape2",
           });
-          group.addShape("text", {
+          group.addShape("image", {
             attrs: {
-              text: "删除",
-              x: width / 2 - 36,
-              y: 6,
+              x: width / 2 - 30,
+              y: -6,
               height: 16,
               width: 16,
               cursor: "pointer",
-              color: "#000000D9",
-              stroke: "#000000D9",
+              img:
+                "https://gw.alipayobjects.com/zos/antfincdn/FLrTNDvlna/antv.png",
             },
             name: "node-icon",
           });
@@ -248,6 +193,7 @@ export default {
       "single-node"
     );
 
+    // 边
     G6.registerEdge("polyline", {
       itemType: "edge",
       draw: function draw(cfg, group) {
@@ -302,7 +248,7 @@ export default {
         const line = group.addShape("path", {
           attrs: {
             path,
-            stroke: colorMap[cfg.data && cfg.data.type],
+            stroke: "#1A91FF",
             lineWidth: 1.2,
             endArrow: false,
           },
@@ -314,10 +260,10 @@ export default {
         const amount = group.addShape("text", {
           attrs: {
             text: cfg.data && cfg.data.amount,
-            x: line2StartPoint.x,
+            x: line2StartPoint.x + 80,
             y: endPoint.y - labelTopOffset - 2,
             fontSize: 14,
-            textAlign: "start",
+            textAlign: "center",
             textBaseline: "middle",
             fill: "#000000D9",
             cursor: "pointer",
@@ -352,7 +298,7 @@ export default {
           },
         },
         style: {
-          stroke: "#72CC4A",
+          stroke: "#1A91FF",
           width: 150,
         },
       },
@@ -363,19 +309,23 @@ export default {
 
     graph.data(data);
     graph.render();
-
-    const edges = graph.getEdges();
-    edges.forEach(function (edge) {
-      const line = edge.getKeyShape();
-      const stroke = line.attr("stroke");
-      const targetNode = edge.getTarget();
-      targetNode.update({
-        style: {
-          stroke,
-        },
-      });
-    });
     graph.paint();
+
+    // 事件
+    graph.on("node:click", (evt) => {
+      const item = evt.item; // 被操作的节点 item
+      const target = evt.target; // 被操作的具体图形
+      // ...
+      console.log(item);
+      console.log(target);
+    });
+    graph.on("edge:click", (evt) => {
+      const item = evt.item; // 被操作的节点 item
+      const target = evt.target; // 被操作的具体图形
+      // ...
+      console.log(item);
+      console.log(target);
+    });
   },
 };
 </script>
