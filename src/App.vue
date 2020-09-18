@@ -8,6 +8,7 @@
       <div class="child"></div>
     </div>-->
     <visualization></visualization>
+    <span>{{now}}</span>
   </div>
 </template>
 
@@ -18,7 +19,30 @@ export default {
   components: {
     Visualization,
   },
+  data() {
+    return {
+      updateMsg: false,
+    };
+  },
+  computed: {
+    now() {
+      if (this.updateMsg) {
+        this.editUpdateMsg();
+        return new Date();
+      } else {
+        this.editUpdateMsg();
+        return new Date();
+      }
+    },
+  },
   mounted() {},
+  methods: {
+    editUpdateMsg() {
+      setTimeout(() => {
+        this.updateMsg = !this.updateMsg;
+      }, 1000);
+    },
+  },
 };
 </script>
 
