@@ -7,17 +7,18 @@
       <div class="child"></div>
       <div class="child"></div>
     </div>-->
-    <visualization></visualization>
-    <span>{{now}}</span>
+    <!-- <visualization></visualization> -->
+    <span>{{ now }}</span>
   </div>
 </template>
 
 <script>
 import Visualization from "./views/visualization/visualization";
+import modal from "./components/modal/modal.js";
 export default {
   name: "App",
   components: {
-    Visualization,
+    // Visualization,
   },
   data() {
     return {
@@ -35,7 +36,11 @@ export default {
       }
     },
   },
-  mounted() {},
+  mounted() {
+    modal({
+      content: Visualization,
+    });
+  },
   methods: {
     editUpdateMsg() {
       setTimeout(() => {
