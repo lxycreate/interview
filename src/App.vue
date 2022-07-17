@@ -1,20 +1,7 @@
-<template>
-  <div id="app">
-    <!-- <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
-    <div class="test">
-      <div class="child"></div>
-      <div class="child"></div>
-      <div class="child"></div>
-    </div>-->
-    <!-- <visualization></visualization> -->
-    <span>{{ now }}</span>
-  </div>
-</template>
-
 <script>
 import Visualization from "./views/visualization/visualization";
 import modal from "./components/modal/modal.js";
+import { memoize, memoizeOne } from "./interview/other/other.ts";
 export default {
   name: "App",
   components: {
@@ -23,6 +10,9 @@ export default {
   data() {
     return {
       updateMsg: false,
+      name: "9900k",
+      age: 999,
+      computeValue: () => {},
     };
   },
   computed: {
@@ -40,6 +30,24 @@ export default {
     modal({
       content: Visualization,
     });
+    this.computeValue = memoize(() => `${this.name}`);
+    setTimeout(() => {
+      this.name = "9900HF";
+    });
+    setTimeout(() => {
+      this.age = 100;
+    }, 1000);
+    setTimeout(() => {
+      this.age = 200;
+    }, 3000);
+  },
+  render() {
+    return (
+      <div>
+        {this.computeValue(this.name)}
+        <div>{this.age}</div>
+      </div>
+    );
   },
   methods: {
     editUpdateMsg() {
