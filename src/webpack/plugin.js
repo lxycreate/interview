@@ -6,6 +6,7 @@ class CDNPlugin {
     constructor() {
         this.map = new Map();
     }
+    
     apply(compiler) {
         compiler.hooks.emit.tap("CDNPlugin", async (compilation) => {
             const assets = compilation.getAssets();
