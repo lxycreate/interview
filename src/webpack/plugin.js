@@ -30,17 +30,21 @@ class CDNPlugin {
             try {
                 for (const [name] of this.map.entries()) {
                     if (/\.(html|js|css||json)$/g.test(name)) {
+                        // 读取文件
                         let content = await fs.readFile(
                             path.resolve(distDir, name),
                             "utf-8"
                         );
+                        // 处理资源
                         for (const [cdnName, cdn] of this.map.entries()) {
                             const keyword = new RegExp(
                                 `${CDN_PREFIX}${cdnName}`,
                                 "g"
                             );
+                            // 替换链接
                             content = content.replace(keyword, cdn);
                         }
+                        // 写入资源
                         await fs.writeFile(
                             path.resolve(distDir, name),
                             content
