@@ -51,7 +51,7 @@
       <slot name="footer">
         <el-button
           class="footer-button"
-          v-if="showCancelButton"
+          v-if="showConfirmButton"
           @click="handleCancel"
           >取消</el-button
         >
